@@ -21,7 +21,7 @@ def init_webdriver():
 	global driver
 	if driver is None:
 		chrome_options = Options()  
-		# chrome_options.add_argument('--headless')  
+		chrome_options.add_argument('--headless')  
 		chrome_options.add_argument('--window-size=1280,800')
 		driver = webdriver.Chrome(options = chrome_options)
 

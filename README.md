@@ -4,7 +4,12 @@ Extrai rankings (standings) do sistema [JUDE](https://github.com/rsalesc/jude), 
 
 ## Instalação
 
-Você precisará ter o Python 3 e o pipenv instalados.
+Você precisará ter os seguintes programas instalados:
+
+- Python 3
+- pipenv
+- Google Chrome (ou Chromium)
+- ChromeDriver
 
 Para baixar as dependências:
 
@@ -29,3 +34,7 @@ Troque `nnn` pelos valores adequados.
 ## Saída
 
 A saída é gravada no arquivo `saida.csv`.
+
+## Workflow do GitHub (GitHub Actions)
+
+Este repositório está configurado para extrair os rankings diariamente. A saída fica disponível como artefato juntamente com o log de execução do workflow.

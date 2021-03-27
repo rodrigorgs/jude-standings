@@ -1,0 +1,23 @@
+name: Backup
+
+on:
+  push:
+    branches: [ '*' ]
+  schedule:
+    - cron:  '0 3 * * *'
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker://selenium/standalone-chrome:4.0.0
+        with:
+          args: /bin/bash -c "sudo apt update -y && sudo apt install -y python pipenv && sudo pipenv install --system && echo Usuario && (echo $JUDE_USER | wc -c) && sudo -E python3 extract-standings.py"
+        env:
+          JUDE_USER: ${{ secrets.JUDE_USER }}
+          JUDE_PASSWORD: ${{ secrets.JUDE_PASSWORD }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: saida
+          path: saida.csv
