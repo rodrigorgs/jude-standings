@@ -9,18 +9,29 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import os
 import time 
+import yaml
 
 driver = None
 
+def load_listas():
+	with open('listas.yml', 'r') as f:
+		return yaml.safe_load(f)
+
 def init_webdriver():
+	global driver
 	if driver is None:
 		chrome_options = Options()  
 		# chrome_options.add_argument('--headless')  
 		chrome_options.add_argument('--window-size=1280,800')
 		driver = webdriver.Chrome(options = chrome_options)
 
-# 'http://200.128.51.30/#/login?id=603bcc937293660011629359'
-def get_standings_html(driver, url):
+def quit_webdriver():
+	global driver
+	driver.quit()
+
+def get_standings_html(url):
+	global driver
+	init_webdriver()
 	driver.implicitly_wait(30)
 
 	driver.get(url)
@@ -61,11 +72,31 @@ def save_data_as_csv(data, filename):
 		for aluno in data:
 			f.write("\t".join(aluno) + "\n")
 
+# def get_example_standings():
+# 	with open('exemplo.html', 'r') as f:
+# 		html = f.read()	
+# 	return html
+
+def download_all_lists():
+	registros = [['Nome', '#', 'Nome da Lista', 'Questão', 'Pontos']]
+	listas = load_listas()
+	for lista in listas:
+		chave = lista['chave']
+		nome_lista = lista['nome']
+		print(nome_lista)
+		html = get_standings_html(lista['url'])
+		data = extract_data(html)
+		for row in data:
+			nome = row[0]
+			score = row[1]
+			details = row[2:]
+			registros.append([nome, chave, nome_lista, 'score', score])
+			for idx, question in enumerate(details):
+				registros.append([nome, chave, nome_lista, f'Q{1+idx}', details[idx]])
+	return registros
+
 
 if __name__ == "__main__":
-	with open('exemplo.html', 'r') as f:
-		html = f.read()
-		data = extract_data(html)
-		# save_data_as_csv(data, 'teste.csv')
-		for aluno in data:
-		print("\t".join(aluno))
+	data = download_all_lists()
+	save_data_as_csv(data, 'saida.csv')
+	quit_webdriver()
