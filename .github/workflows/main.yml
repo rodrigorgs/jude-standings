@@ -21,3 +21,35 @@ jobs:
         with:
           name: saida
           path: saida.csv
+
+  # # Dry run, for testing
+  # backup:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: echo -ne "a\tb\tc\td\te\na\tb\tc\td\t9\n" > saida.csv
+  #     - uses: actions/upload-artifact@v2
+  #       with:
+  #         name: saida
+  #         path: saida.csv
+
+  upload:
+    needs: [backup]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: saida
+      - run: ls .
+      - name: Install dependecies
+        uses: VaultVulp/action-pipenv@v2.0.1
+        with:
+          command: install
+      - name: Run
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          SHEET_TITLE: ${{ secrets.SHEET_TITLE }}
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+        uses: VaultVulp/action-pipenv@v2.0.1
+        with:
+          command: run ./upload-standings.py
