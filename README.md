@@ -1,5 +1,3 @@
-https://superuser.com/questions/162624/how-to-password-protect-gzip-files-on-the-command-line
-
 # Jude Standings
 
 Extrai rankings (standings) do sistema [JUDE](https://github.com/rsalesc/jude), usado em competições de programação. Os rankings são extraídos de forma simplificada, ignorando informações como tempo da submissão ou número de submissões.
